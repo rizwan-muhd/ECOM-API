@@ -12,8 +12,8 @@ const {
 const router = express();
 
 router.post("/create-category", verifyToken, verifyAdmin, createCategory);
-router.get("/get-category", getAllCategories);
-router.put("/update-category", updateCategory);
-router.delete("/delete-category", deleteCategory);
+router.get("/get-category", verifyToken, getAllCategories);
+router.put("/update-category", verifyToken, verifyAdmin, updateCategory);
+router.delete("/delete-category", verifyToken, verifyAdmin, deleteCategory);
 
 module.exports = router;

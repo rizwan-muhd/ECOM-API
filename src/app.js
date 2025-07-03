@@ -6,6 +6,9 @@ const helmet = require("helmet");
 // const errorHandler = require("./middlewares/Error.Handler");
 const userRoutes = require("./routes/User.Routes");
 const categoryRoutes = require("./routes/Category.Route");
+const productRoutes = require("./routes/Product.Routes");
+const cartRoutes = require("./routes/Cart.Routes");
+const orderRoutes = require("./routes/Order.Route");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger-output.json");
 
@@ -27,6 +30,9 @@ app.use(cors());
 
 app.use("/api/auth", userRoutes);
 app.use("/api/category", categoryRoutes);
+app.use("/api/product", productRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/orderRoutes", orderRoutes);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 

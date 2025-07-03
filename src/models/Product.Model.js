@@ -2,7 +2,12 @@ const { DataTypes } = require("sequelize");
 const { sequelize } = require("../Config/Database");
 const { Category } = require("../models/Category.Model");
 
-export const Product = sequelize.define("Product", {
+const Product = sequelize.define("Product", {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true,
+  },
   name: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -22,4 +27,6 @@ export const Product = sequelize.define("Product", {
 });
 
 Product.belongsTo(Category, { foreignKey: "categoryId", onDelete: "SET NULL" });
-Category.hasMAny(Product, { foreignKey: "categoryId" });
+Category.hasMany(Product, { foreignKey: "categoryId" });
+
+module.exports = Product;

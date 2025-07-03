@@ -1,6 +1,8 @@
-const { Product } = require("../models/Product.Model");
+const Product = require("../models/Product.Model");
+const { Category } = require("../models/Category.Model");
+const { Op } = require("sequelize");
 
-export const createProduct = async (req, res, next) => {
+const createProduct = async (req, res) => {
   try {
     const { name, description, price, stock, categoryId } = req.body;
     const imageUrl = req.file?.path;
@@ -14,11 +16,12 @@ export const createProduct = async (req, res, next) => {
     });
     res.status(201).json({ message: "Product created", product });
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ message: "Server error", error: error });
   }
 };
 
-export const getAllProducts = async (req, res, next) => {
+const getAllProducts = async (req, res, next) => {
   try {
     const {
       minPrice,
@@ -43,8 +46,7 @@ export const getAllProducts = async (req, res, next) => {
       where.categoryId = categoryId;
     }
 
-    // Apply name search
-    if (search) {
+    if (search && search.trim() !== "") {
       where.name = {
         [Op.iLike]: `%${search}%`,
       };
@@ -65,11 +67,12 @@ export const getAllProducts = async (req, res, next) => {
       products: rows,
     });
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ message: "Server error", error: error });
   }
 };
 
-export const UpdateProduct = async (req, res, next) => {
+const UpdateProduct = async (req, res) => {
   try {
     const product = await Product.findByPk(req.params.id);
     if (!product) return res.status(404).json({ message: "Product not found" });
@@ -88,10 +91,11 @@ export const UpdateProduct = async (req, res, next) => {
 
     res.json({ message: "Product updated", product });
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ message: "Server error", error: error });
   }
 };
-export const deleteProduct = async (req, res, next) => {
+const deleteProduct = async (req, res) => {
   try {
     const product = await Product.findByPk(req.params.id);
     if (!product) return res.status(404).json({ message: "Product not found" });
@@ -99,6 +103,14 @@ export const deleteProduct = async (req, res, next) => {
     await product.destroy();
     res.json({ message: "Product deleted" });
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ message: "Server error", error: error });
   }
+};
+
+module.exports = {
+  createProduct,
+  getAllProducts,
+  UpdateProduct,
+  deleteProduct,
 };

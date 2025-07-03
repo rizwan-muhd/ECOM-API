@@ -1,6 +1,6 @@
 const { Category } = require("../models/Category.Model");
 
-const createCategory = async (req, res, next) => {
+const createCategory = async (req, res) => {
   try {
     const { name, description } = req.body;
     const exists = await Category.findOne({ where: { name } });
@@ -10,20 +10,22 @@ const createCategory = async (req, res, next) => {
     const category = await Category.create({ name, description });
     res.status(201).json({ message: "Category created", category });
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ message: "Server error", error: error });
   }
 };
 
-const getAllCategories = async () => {
+const getAllCategories = async (req, res) => {
   try {
     const categories = await Category.findAll();
     res.status(200).json(categories);
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ message: "Server error", error: error });
   }
 };
 
-const updateCategory = async () => {
+const updateCategory = async (req, res) => {
   try {
     const category = await Category.findByPk(req.params.id);
     if (!category)
@@ -33,11 +35,12 @@ const updateCategory = async () => {
     await category.update({ name, description });
     res.json({ message: "Category updated", category });
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ message: "Server error", error: error });
   }
 };
 
-const deleteCategory = async (req, res, next) => {
+const deleteCategory = async (req, res) => {
   try {
     const category = await Category.findByPk(req.params.id);
     if (!category)
@@ -46,7 +49,8 @@ const deleteCategory = async (req, res, next) => {
     await category.destroy();
     res.json({ message: "Category deleted" });
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ message: "Server error", error: error });
   }
 };
 

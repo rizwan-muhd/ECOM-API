@@ -23,7 +23,7 @@ router.post(
 );
 router.get("/get-products", verifyToken, getAllProducts);
 router.put(
-  "/update-product",
+  "/update-product/:id",
   verifyToken,
   verifyAdmin,
   upload.single("image"),

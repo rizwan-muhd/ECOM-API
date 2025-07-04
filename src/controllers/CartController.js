@@ -6,24 +6,37 @@ const addToCart = async (req, res) => {
     const { productId, quantity } = req.body;
     const userId = req.user.id;
 
-    const qty = parseInt(quantity, 10); // ✅ ensure it's a number
-
+    const qty = parseInt(quantity, 10);
     if (isNaN(qty) || qty <= 0) {
       return res.status(400).json({ message: "Invalid quantity" });
     }
 
+    // Fetch current product price
+    const product = await Product.findByPk(productId);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
     const existing = await Cart.findOne({ where: { userId, productId } });
+
     if (existing) {
+      // Only update quantity, not the price
       existing.quantity += qty;
       await existing.save();
     } else {
-      await Cart.create({ userId, productId, quantity });
+      // Save product price at the time of adding
+      await Cart.create({
+        userId,
+        productId,
+        quantity: qty,
+        priceAtAddTime: product.price, // 👈 persist current price here
+      });
     }
 
     res.json({ message: "Added to cart" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error", error: error });
+    res.status(500).json({ message: "Server error", error });
   }
 };
 

@@ -21,6 +21,7 @@ const Cart = sequelize.define("Cart", {
     type: DataTypes.INTEGER,
     defaultValue: 1,
   },
+  priceAtAddTime: DataTypes.FLOAT,
 });
 
 Cart.belongsTo(User, { foreignKey: "userId" });

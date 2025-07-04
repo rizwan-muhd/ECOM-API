@@ -12,13 +12,14 @@ const createOrder = async (req, res) => {
       include: [Product],
     });
 
-    if (!cartItems.length)
+    if (!cartItems.length) {
       return res.status(400).json({ message: "Cart is empty" });
+    }
 
     const products = cartItems.map((item) => ({
       productId: item.productId,
-      name: item.Product.name,
-      price: item.Product.price,
+      name: item.Product?.name || "Unknown Product",
+      price: item.priceAtAddTime,
       quantity: item.quantity,
     }));
 
@@ -40,7 +41,7 @@ const createOrder = async (req, res) => {
     res.status(201).json(order);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error", error: error });
+    res.status(500).json({ message: "Server error", error });
   }
 };
 

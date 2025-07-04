@@ -2,6 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const storage = require("../middlewares/MulterStorage");
 const { verifyToken, verifyAdmin } = require("../middlewares/Auth");
+const { validateProduct } = require("../middlewares/Product.validations");
 const {
   createProduct,
   getAllProducts,
@@ -17,6 +18,7 @@ router.post(
   verifyToken,
   verifyAdmin,
   upload.single("image"),
+  validateProduct,
   createProduct
 );
 router.get("/get-products", verifyToken, getAllProducts);
@@ -25,6 +27,7 @@ router.put(
   verifyToken,
   verifyAdmin,
   upload.single("image"),
+  validateProduct,
   UpdateProduct
 );
 router.delete("/delete-product", verifyToken, verifyAdmin, deleteProduct);
